@@ -10,7 +10,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(vuln_app.app.root_path, 'd
 vuln_app.app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 vuln_app.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-vuln_app.app.config['SECRET_KEY'] = 'random'
+vuln_app.app.config['SECRET_KEY'] = 'azvFpLsR2CQVUVXNBTjs2WUo6TawcV13' #zmienionysecret key
 # start the db
 db = SQLAlchemy(vuln_app.app)
 
