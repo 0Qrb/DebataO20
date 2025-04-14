@@ -6,6 +6,7 @@ from app import vuln, alive
 from models.books_model import Book
 from random import randrange
 from sqlalchemy.sql import text
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
@@ -53,10 +54,10 @@ class User(db.Model):
             return {'error': 'Invalid token. Please log in again.'}
 
     def json(self):
-        return {'username': self.username, 'email': self.email}
+        return {'username': "xd"}
 
     def json_debug(self):
-        return {'username': self.username, 'password': self.password, 'email': self.email, 'admin': self.admin}
+        return {'username': "xd"}
 
     @staticmethod
     def get_all_users():
@@ -67,26 +68,24 @@ class User(db.Model):
         return [User.json_debug(user) for user in User.query.all()]
 
     @staticmethod
-    def get_user(username):
-        if vuln:  # SQLi Injection
-            user_query = f"SELECT * FROM users WHERE username = '{username}'"
-            query = db.session.execute(text(user_query))
-            ret = query.fetchone()
-            if ret:
-                fin_query = '{"username": "%s", "email": "%s"}' % (ret[1], ret[3])
-            else:
-                fin_query = None
-        else:
-            fin_query = User.query.filter_by(username=username).first()
+    def get_user(username): 
+        fin_query = User.query.filter_by(username=username).first()
         return fin_query
 
     @staticmethod
     def register_user(username, password, email, admin=False):
-        new_user = User(username=username, password=password, email=email, admin=admin)
+        if admin:
+            # Add additional validation for admin registration
+            raise ValueError("Admin registration must be handled securely.")
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+        new_user = User(username=username, password=hashed_password, email=email, admin=admin)
         randomint = str(randrange(100))
         new_user.books = [Book(book_title="bookTitle" + randomint, secret_content="secret for bookTitle" + randomint)]
         db.session.add(new_user)
         db.session.commit()
+
+    def verify_password(self, password):
+        return check_password_hash(self.password, password)
 
     @staticmethod
     def delete_user(username):
@@ -96,6 +95,6 @@ class User(db.Model):
 
     @staticmethod
     def init_db_users():
-        User.register_user("name1", "pass1", "mail1@mail.com", False)
-        User.register_user("name2", "pass2", "mail2@mail.com", False)
-        User.register_user("admin", "pass1", "admin@mail.com", True)
+        User.register_user("name1", "vYtf2CcDT58yhwLk", "mail1@mail.com", False)
+        User.register_user("name2", "HuVC3d842za6RgeD", "mail2@mail.com", False)
+        User.register_user("admin", "q3uUCYnhxA8KRf7y", "admin@mail.com", True)
