@@ -46,7 +46,7 @@ def get_by_username(username):
     if User.get_user(username):
         return Response(str(User.get_user(username)), 200, mimetype="application/json")
     else:
-        return Response(error_message_helper("User not found"), 404, mimetype="application/json")
+        return Response(error_message_helper("Error"), 404, mimetype="application/json")
 
 
 def register_user():
@@ -72,7 +72,7 @@ def register_user():
         except jsonschema.exceptions.ValidationError as exc:
             return Response(error_message_helper(exc.message), 400, mimetype="application/json")
     else:
-        return Response(error_message_helper("User already exists. Please Log in."), 200, mimetype="application/json")
+        return Response(error_message_helper("Error"), 200, mimetype="application/json")
 
 
 def login_user():
@@ -98,7 +98,7 @@ def login_user():
     except jsonschema.exceptions.ValidationError as exc:
         return Response(error_message_helper(exc.message), 400, mimetype="application/json")
     except:
-        return Response(error_message_helper("An error occurred!"), 200, mimetype="application/json")
+        return Response(error_message_helper("Error"), 200, mimetype="application/json")
 
 
 def token_validator(auth_header):
@@ -121,7 +121,7 @@ def update_email(username):
     try:
         jsonschema.validate(request_data, update_email_schema)
     except:
-        return Response(error_message_helper("Please provide a proper JSON body."), 400, mimetype="application/json")
+        return Response(error_message_helper("Error."), 400, mimetype="application/json")
     resp = token_validator(request.headers.get('Authorization'))
     if "error" in resp:
         return Response(error_message_helper(resp), 401, mimetype="application/json")
